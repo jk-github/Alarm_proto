@@ -6,8 +6,8 @@ int buzala;
 int pirala;
 int pirsensor = 8;
 int vibala;
-int redpin = 11; // red LED 
-int greenpin = 10; // green LED 
+int redpin = 10; // red LED 
+int greenpin = 11; // green LED 
 void setup() 
 
 {
@@ -19,19 +19,46 @@ void setup()
  pinMode (redpin, OUTPUT); 
  pinMode (greenpin, OUTPUT); 
 } 
-
+void red()
+{       analogWrite (greenpin, 0);
+        analogWrite (redpin, 255);
+  }
+  void green()
+{       analogWrite (greenpin, 255);
+        analogWrite (redpin, 0);
+  }
+ void buzzerAlarm(int x)
+  {
+    int a = 1;
+   
+    if (x==1)
+    {
+      red();
+      for (a=1 ;a<50;a++)
+    {
+      int a = 1;
+      tone(buzzer,10,10000);
+      delay(50);
+      tone(buzzer,12,100);
+      }}
+     if (x==2){for (a=1;a<50;a++)
+     {
+      red();
+      int a = 1;
+      tone(buzzer,5,10000);
+      delay(50);
+      tone(buzzer,20,100);
+      }}
+    }
 void loop()  
 {  
  vibala=digitalRead(vib);
  pirala=digitalRead(pirsensor);
  
-   if(vibala==HIGH) 
+   if(vibala == HIGH) 
    { 
  
-     digitalWrite(buzzer, HIGH); 
-        delayMicroseconds(1000);  
-        digitalWrite(buzzer, LOW); 
-        delayMicroseconds(1000);
+        buzzerAlarm(1);
         analogWrite (greenpin, 255);
         analogWrite (redpin, 0);
      
@@ -43,21 +70,15 @@ void loop()
 
         analogWrite (greenpin, 255);
         analogWrite (redpin, 0);
-        digitalWrite(buzzer, HIGH); 
-        delay(10);  
-        digitalWrite(buzzer, LOW); 
-        delay(10); 
+        buzzerAlarm(2);
+        delay(10);
    }  
    else 
    { 
-         analogWrite (redpin, 255);
-         analogWrite (greenpin, 0);
-         Serial.println("Motion ended!");
-         digitalWrite(Led,LOW); 
-        delay(10);
-       
-    
-    
-  } 
+        green();
+        Serial.println("Motion ended!");
+        digitalWrite(Led,LOW); 
+         delay(10);
+        } 
 
 }
