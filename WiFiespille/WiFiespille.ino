@@ -1,75 +1,71 @@
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
-#include <WiFiUdp.h>
-#include <ArduinoOTA.h>
+/**
+ * BasicHTTPClient.ino
+ *
+ *  Created on: 24.05.2015
+ *
+ */
 
-const char* ssid = "honor8";
-const char* password = "phooKai2";
+#include <Arduino.h>
+
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+
+#include <ESP8266HTTPClient.h>
+
+#define USE_SERIAL Serial
+
+ESP8266WiFiMulti WiFiMulti;
 
 void setup() {
-  Serial.begin(115200);
-  Serial.println("Booting");
-   pinMode(0, OUTPUT);
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-  while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-    Serial.println("Connection Failed! Rebooting...");
-    delay(5000);
-    ESP.restart();
-  }
 
-  // Port defaults to 8266
-  // ArduinoOTA.setPort(8266);
+    USE_SERIAL.begin(115200);
+   // USE_SERIAL.setDebugOutput(true);
 
-  // Hostname defaults to esp8266-[ChipID]
-  // ArduinoOTA.setHostname("myesp8266");
+    USE_SERIAL.println();
+    USE_SERIAL.println();
+    USE_SERIAL.println();
 
-  // No authentication by default
-  // ArduinoOTA.setPassword((const char *)"123");
+    for(uint8_t t = 4; t > 0; t--) {
+        USE_SERIAL.printf("[SETUP] WAIT %d...\n", t);
+        USE_SERIAL.flush();
+        delay(1000);
+    }
 
-  ArduinoOTA.onStart([]() {
-    Serial.println("Start");
-  });
-  ArduinoOTA.onEnd([]() {
-    Serial.println("\nEnd");
-  });
-  ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
-    Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-  });
-  ArduinoOTA.onError([](ota_error_t error) {
-    Serial.printf("Error[%u]: ", error);
-    if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
-    else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
-    else if (error == OTA_CONNECT_ERROR) Serial.println("Connect Failed");
-    else if (error == OTA_RECEIVE_ERROR) Serial.println("Receive Failed");
-    else if (error == OTA_END_ERROR) Serial.println("End Failed");
-  });
-  ArduinoOTA.begin();
-  Serial.println("Ready");
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
-}
-String serialHttpGet(String url) {
-  Serial.print("GET ");
-  Serial.println(url);
-  return Serial.readStringUntil('\n');
-}
+    WiFiMulti.addAP("honor8", "phooKai2");
 
-float serialHttpGetFloat(String url) {
-  String s = serialHttpGet(url);
-  delay(1000);
-  return s.toFloat();
 }
 
 void loop() {
-  ArduinoOTA.handle();
-  float x = 1.33;
-  digitalWrite(0, HIGH);
-  delay(5000);
-  digitalWrite(0, LOW);
-  delay(5000);
-  x = serialHttpGetFloat("http://one.api.botbook.com/last/RbXY29EudyF");
-  Serial.println(x);
+    // wait for WiFi connection
+    if((WiFiMulti.run() == WL_CONNECTED)) {
 
+        HTTPClient http;
+
+        USE_SERIAL.print("[HTTP] begin...\n");
+        // configure traged server and url
+        //http.begin("https://192.168.1.12/test.html", "7a 9c f4 db 40 d3 62 5a 6e 21 bc 5c cc 66 c8 3e a1 45 59 38"); //HTTPS
+        http.begin("http://one.api.botbook.com/last/RbXY29EudyF"); //HTTP
+
+        USE_SERIAL.print("[HTTP] GET...\n");
+        // start connection and send HTTP header
+        int httpCode = http.GET();
+
+        // httpCode will be negative on error
+        if(httpCode > 0) {
+            // HTTP header has been send and Server response header has been handled
+            USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+
+            // file found at server
+            if(httpCode == HTTP_CODE_OK) {
+                String payload = http.getString();
+                USE_SERIAL.println(payload);
+            }
+        } else {
+            USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        }
+
+        http.end();
+    }
+
+    delay(10000);
 }
-
