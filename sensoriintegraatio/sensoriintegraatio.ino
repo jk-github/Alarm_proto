@@ -8,10 +8,12 @@ int pirsensor = 8;
 int vibala;
 int redpin = 10; // red LED 
 int greenpin = 11; // green LED 
+float x =-8888;
+String numero;
 void setup() 
 
 {
- Serial.begin (9600); 
+ Serial.begin (115200); 
  pinMode(buzzer, OUTPUT); 
  pinMode(Led,OUTPUT);  
  pinMode(vib,INPUT);
@@ -23,6 +25,27 @@ void red()
 {       analogWrite (greenpin, 0);
         analogWrite (redpin, 255);
   }
+  String serialHttpGet(String url) {
+  Serial.print("GET ");
+  Serial.println(url);
+  return Serial.readStringUntil('\n');
+}
+
+float serialHttpGetFloat(String url) {
+  String s = serialHttpGet(url);
+  return s.toFloat();
+}
+float numGet(){
+    
+     x = serialHttpGetFloat("http://one.api.botbook.com/last/RbXY29EudyF");
+   
+}
+
+void numSend(String numero){
+    
+    
+     x = serialHttpGetFloat("http://one.api.botbook.com/add/10P3Em4hjKa/?x="+ numero);
+      }
   void green()
 {       analogWrite (greenpin, 255);
         analogWrite (redpin, 0);
@@ -57,28 +80,29 @@ void loop()
  
    if(vibala == HIGH) 
    { 
- 
+        numSend("451");
         buzzerAlarm(1);
         analogWrite (greenpin, 255);
         analogWrite (redpin, 0);
      
     digitalWrite(Led,LOW); 
+    delay(1000);
    }
    else if(pirala == HIGH) 
    {
    Serial.println("Motion detected!");
-
+        numSend("666");
         analogWrite (greenpin, 255);
         analogWrite (redpin, 0);
         buzzerAlarm(2);
-        delay(10);
+        delay(1000);
    }  
    else 
    { 
         green();
         Serial.println("Motion ended!");
         digitalWrite(Led,LOW); 
-         delay(10);
+         delay(1000);
         } 
 
 }
