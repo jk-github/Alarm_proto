@@ -6,6 +6,8 @@ int buzala;
 int pirala;
 int pirsensor = 8;
 int vibala;
+int redpin = 11; // red LED 
+int greenpin = 10; // green LED 
 void setup() 
 
 {
@@ -14,6 +16,8 @@ void setup()
  pinMode(Led,OUTPUT);  
  pinMode(vib,INPUT);
  pinMode(pirsensor,INPUT);
+ pinMode (redpin, OUTPUT); 
+ pinMode (greenpin, OUTPUT); 
 } 
 
 void loop()  
@@ -22,18 +26,23 @@ void loop()
  pirala=digitalRead(pirsensor);
  
    if(vibala==HIGH) 
-   {  
+   { 
+ 
      digitalWrite(buzzer, HIGH); 
-        delayMicroseconds(100);  
+        delayMicroseconds(1000);  
         digitalWrite(buzzer, LOW); 
-        delayMicroseconds(100);
+        delayMicroseconds(1000);
+        analogWrite (greenpin, 255);
+        analogWrite (redpin, 0);
      
     digitalWrite(Led,LOW); 
    }
-   if(pirala == HIGH) 
+   else if(pirala == HIGH) 
    {
    Serial.println("Motion detected!");
-       
+
+        analogWrite (greenpin, 255);
+        analogWrite (redpin, 0);
         digitalWrite(buzzer, HIGH); 
         delay(10);  
         digitalWrite(buzzer, LOW); 
@@ -41,7 +50,8 @@ void loop()
    }  
    else 
    { 
-        
+         analogWrite (redpin, 255);
+         analogWrite (greenpin, 0);
          Serial.println("Motion ended!");
          digitalWrite(Led,LOW); 
         delay(10);
@@ -50,4 +60,4 @@ void loop()
     
   } 
 
-} 
+}
