@@ -26,7 +26,7 @@ void setup()
 void loop()
 {
  val=digitalRead(vib);
-   if(val==HIGH) // 진동 없음( NO Connect )
+   if(val==HIGH)
    {
      digitalWrite(buzzer, HIGH);
         delay(2);
@@ -35,7 +35,7 @@ void loop()
 
     digitalWrite(Led,LOW); // LED OFF
    }
-   else // 진동 감지 ( Connect )
+   else
    {
        for (int i = 0; i < 100; i++)
        {
@@ -45,6 +45,7 @@ void loop()
 
 Jatkoimme sensorikokeiluja PIR sensorilla jonka toimintaansaattamisessa oli onglelmia katsoimme neuvoa https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/testing-a-pir
 sivustolta aluksi laitoimme sensorin kiinni mutta se ei tuntunut toimivan. Siirtelimme jumperia ja säätelimme säätöruuveja saimme kuitenkin lopulta aikaan toimivan version.
+
 
 
 
