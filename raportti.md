@@ -46,6 +46,8 @@ void loop()
 Jatkoimme sensorikokeiluja PIR sensorilla jonka toimintaansaattamisessa oli onglelmia katsoimme neuvoa https://learn.adafruit.com/pir-passive-infrared-proximity-motion-sensor/testing-a-pir
 sivustolta aluksi laitoimme sensorin kiinni mutta se ei tuntunut toimivan. Siirtelimme jumperia ja säätelimme säätöruuveja saimme kuitenkin lopulta aikaan toimivan version.
 
+https://youtu.be/oMKn8IOeq2Q
+
 
 
 
